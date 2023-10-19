@@ -1,2 +1,2 @@
-# projet4A
+# Projet4A
  L'IA intégrée au jeu mobile
