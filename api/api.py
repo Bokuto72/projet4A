@@ -1,35 +1,32 @@
-from flask import Flask
-from flask_restful import Api
+from flask import Flask, request, jsonify
+from flask_restful import Api, Resource
 import pandas as pd
 import numpy as np
 import random
 
+
 app = Flask(__name__)
 api = Api(app)
 
-class recommendation(Resource):
-    def get(self, name):
+@app.route("/get-user/<user_id>")
+def get_user(user_id):
+    user_data = {
+        "user_id": user_id,
+        "username": "Thibault"           
+    }
 
-    
-        dataset = pd.read_csv('out.csv', header = None, error_bad_lines=False)
+    extra = request.args.get("extra")
+    if extra:
+         user_data["extra"] = extra
 
-        transactions = []
-        for i in range(0, 19):
-            transactions.append([str(dataset.values[i,j]) for j in range(0, 2)])
+    return jsonify(user_data), 200
 
-        cleanedList = []
-        for i in range(19):
-            if(name in transactions[i]):
-                recc = transactions[i]
-                recc.remove(name)
-                cleanedList = [x for x in recc if str(x) != 'nan']
-                # print(cleanedList)
-                break
-    
+@app.route("/create-user", methods=["POST"])
+def create_user():
+    data = request.get_json()
 
-        return {'data': cleanedList}
-
-api.add_resource(recommendation, '/<name>')
+    return jsonify(data), 201
 
 if __name__ == '__main__':
      app.run(host='0.0.0.0')
+     #app.run(debug=True)
