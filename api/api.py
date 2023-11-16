@@ -8,11 +8,20 @@ import random
 app = Flask(__name__)
 api = Api(app)
 
-@app.route("/get-user/<user_id>")
+users = [{
+     "user_id": "1",
+     "username": "Zidane"
+}]
+
+@app.route("/", methods=['GET'])
+def index():
+     return jsonify("Hello World"), 200 
+
+@app.route("/get-user/<user_id>", methods=["GET"])
 def get_user(user_id):
+    user = [users for user in users if user['user_id'] == user_id]
     user_data = {
-        "user_id": user_id,
-        "username": "Thibault"           
+        "user": user[0],     
     }
 
     extra = request.args.get("extra")
@@ -23,10 +32,15 @@ def get_user(user_id):
 
 @app.route("/create-user", methods=["POST"])
 def create_user():
-    data = request.get_json()
+    data = {"user_id": request.json('user_id'),
+            "username": request.json('username')
+            }
 
+    users.append(data)
     return jsonify(data), 201
 
+
 if __name__ == '__main__':
-     app.run(host='0.0.0.0')
-     #app.run(debug=True)
+     #app.run(host='0.0.0.0', port=5000)
+     app.run(debug=True)
+ 
